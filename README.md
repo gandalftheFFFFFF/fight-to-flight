@@ -4,7 +4,7 @@ This is a simple program that watches and logs the prices for flight tickets fro
 ## Structure
 The program is created using actors. There is a main method that gets the wheels in motion.
 Flow of the program:
-![the structure][fight-to-flight-model.png]
+![the structure](https://github.com/nielspedersen/fight-to-flight/edit/master/fight-to-flight-model.png)
 
 ### Main method
 The main method estrablishes a scheduler that sends a message to `theSetActor` to check if any `records` need a refresh. A `record` is a case class: 
