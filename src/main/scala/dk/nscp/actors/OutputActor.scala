@@ -10,7 +10,7 @@ class OutputActor extends Actor {
     case record: Record => 
       // print to output file
       val fw = new FileWriter("output.csv", true)
-      fw.write(record.toString + "\n")
+      fw.write(record.csvFormat + "\n")
       fw.close()
   }
 
