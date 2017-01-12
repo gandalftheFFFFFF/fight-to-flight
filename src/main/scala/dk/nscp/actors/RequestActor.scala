@@ -51,7 +51,7 @@ class RequestActor extends Actor {
 
 
     val outPrice = (outbound(0) \ "price" \ "totalPrice").extract[Float]
-    val inPrice = (outbound(0) \ "price" \ "totalPrice").extract[Float]
+    val inPrice = (inbound(0) \ "price" \ "totalPrice").extract[Float]
 
     val totalPrice = outPrice + inPrice
 

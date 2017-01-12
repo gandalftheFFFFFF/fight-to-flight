@@ -41,8 +41,8 @@ object Runner extends App {
     }
   }
 
-  val departureDates = generateDateRange(new DateTime(2017, 4, 10, 0, 0), 5)
-  val returnDates = generateDateRange(new DateTime(2017, 4, 17, 0, 0), 5)
+  val departureDates = generateDateRange(new DateTime(2017, 4, 15, 0, 0), 0)
+  val returnDates = generateDateRange(new DateTime(2017, 4, 20, 0, 0), 0)
 
   initializeRequests(departureDates, returnDates, "CPH", "TYO")
 
