@@ -26,7 +26,6 @@ class TimeTableActor extends Actor {
             println("time to let someone know!")
             timeMap += (newValue.uniqueKey -> newValue)
           }
-          println("In any case: nothing happens!")
         case None =>
           timeMap += (newValue.uniqueKey -> newValue)
       }
@@ -39,12 +38,11 @@ class TimeTableActor extends Actor {
           val record = pair._2
           val now = (new DateTime())
           val searchTime = record.searchTime
-          val diff = (new Duration(searchTime, now)).getStandardSeconds
-          if (diff > 60) {
+          val diff = (new Duration(searchTime, now)).getStandardMinutes
+          if (diff > 5) {
             requestRouterActor ! CheckFlight(record.outTime, record.inTime, "CPH", "TYO")
           }
         }
       )
-      println(s"refreshing timeMap: $timeMap")
   }
 }

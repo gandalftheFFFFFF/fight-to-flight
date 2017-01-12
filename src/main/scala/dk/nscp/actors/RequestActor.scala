@@ -11,6 +11,7 @@ import org.joda.time.DateTime
 class RequestActor extends Actor {
   def receive = {
     case checkFlight: CheckFlight => 
+      println(s"$self: requesting...")
       sender() ! getFlightDetails(checkFlight)
   }
 

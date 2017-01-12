@@ -41,12 +41,12 @@ object Runner extends App {
     }
   }
 
-  val departureDates = generateDateRange(new DateTime(2017, 4, 10, 0, 0), 0)
-  val returnDates = generateDateRange(new DateTime(2017, 4, 17, 0, 0), 0)
+  val departureDates = generateDateRange(new DateTime(2017, 4, 10, 0, 0), 5)
+  val returnDates = generateDateRange(new DateTime(2017, 4, 17, 0, 0), 5)
 
   initializeRequests(departureDates, returnDates, "CPH", "TYO")
 
   import system.dispatcher
-  val refreshTimeSet = system.scheduler.schedule(0 milliseconds, 30 seconds, timeSetActor, RefreshRecords)
+  val refreshTimeSet = system.scheduler.schedule(0 milliseconds, 30 minutes, timeSetActor, RefreshRecords)
 }
 

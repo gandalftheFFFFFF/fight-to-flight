@@ -18,6 +18,7 @@ object ActorObjects {
     inTime: DateTime
   ) {
     def uniqueKey: (DateTime, DateTime) = (outTime, inTime)
+    def csvFormat: String = s"$searchTime,$totalPrice,$outPrice,$inPrice,$outTime,$inTime"
   }
 
   case class CheckFlight(
