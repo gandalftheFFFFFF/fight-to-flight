@@ -8,37 +8,45 @@ import java.util.Calendar
 import org.joda.time.DateTime
 import java.text.SimpleDateFormat
 import dk.nscp.actors.ActorObjects._
-import dk.nscp.actors.{OutputActor, RequestActor}
+import dk.nscp.actors.{OutputActor, RequestActor, RequestRouterActor, TimeTableActor}
 import akka.actor.{Actor, Props, ActorSystem}
+import scala.concurrent.duration._
 
 object Runner extends App {
   val system = ActorSystem("flightSystem")
 
   val outputter = system.actorOf(Props[OutputActor], name = "outputactor")
-  val checker = system.actorOf(Props[RequestActor], name = "checker")
+  val timeSetActor = system.actorOf(Props[TimeTableActor], name = "timesetactor")
+  val requestRouterActor = system.actorOf(Props[RequestRouterActor], name = "routingactor")
 
   def generateDateRange(defaultDate: DateTime, numberOfDays: Int): Seq[DateTime] = {
     val jodaDate = new DateTime(defaultDate)
     def helper(d: DateTime, dates: Seq[DateTime], daysRemaining: Int): Seq[DateTime] = {
-      if (daysRemaining == 0) dates
+      val newDates = dates :+ d
+      if (daysRemaining == 0) newDates
       else {
         val nextDate = d.plusDays(1)
 
-        helper(nextDate, dates :+ d, daysRemaining - 1)
+        helper(nextDate, newDates, daysRemaining - 1)
       }
     }
     helper(defaultDate, Seq(), numberOfDays)
   }
 
-  val departureDates = generateDateRange(new DateTime(2017, 7, 1, 0, 0), 7)
-  val returnDates = generateDateRange(new DateTime(2017, 7, 7, 0, 0), 7)
+  def initializeRequests(departureDates: Seq[DateTime], returnDates: Seq[DateTime], origin: String, destination: String): Unit = {
+    for (departureDate <- departureDates) {
+      for (returnDate <- returnDates) {
+        timeSetActor ! CheckFlight(departureDate, returnDate, origin, destination)
+      }
+    }
+  }
 
+  val departureDates = generateDateRange(new DateTime(2017, 4, 10, 0, 0), 0)
+  val returnDates = generateDateRange(new DateTime(2017, 4, 17, 0, 0), 0)
 
-  println(s"Departure dates: $departureDates")
-  println(s"Return dates: $returnDates")
+  initializeRequests(departureDates, returnDates, "CPH", "TYO")
 
-  val outDate = departureDates(0)
-  val inDate = returnDates(0)
-
-  checker ! CheckFlight(outDate, inDate, "CPH", "ALC")
+  import system.dispatcher
+  val refreshTimeSet = system.scheduler.schedule(0 milliseconds, 30 seconds, timeSetActor, RefreshRecords)
 }
+

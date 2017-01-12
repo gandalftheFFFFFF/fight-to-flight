@@ -5,7 +5,10 @@ import org.joda.time.DateTime
 
 object ActorObjects {
 
+  case object RefreshRecords
+
   // case class that describes a pair of tickets
+  // TODO: Add from and to
   case class Record(
     searchTime: DateTime,
     totalPrice: Float,
@@ -13,7 +16,9 @@ object ActorObjects {
     inPrice: Float,
     outTime: DateTime,
     inTime: DateTime
-  )
+  ) {
+    def uniqueKey: (DateTime, DateTime) = (outTime, inTime)
+  }
 
   case class CheckFlight(
     outDate: DateTime,

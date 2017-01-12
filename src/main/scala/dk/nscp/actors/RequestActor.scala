@@ -11,8 +11,7 @@ import org.joda.time.DateTime
 class RequestActor extends Actor {
   def receive = {
     case checkFlight: CheckFlight => 
-      val record = getFlightDetails(checkFlight)
-      println(record)
+      sender() ! getFlightDetails(checkFlight)
   }
 
   def getFlightDetails(check: CheckFlight): Record = {
@@ -28,12 +27,13 @@ class RequestActor extends Actor {
     val to = check.to
     
     val tokenRequest = (Http("https://www.sas.dk/bin/sas/d360/getOauthToken")
-    ).postData("")
+    ).postData("").timeout(connTimeoutMs = 5000, readTimeoutMs = 5000)
     val tokenResponse = tokenRequest.asString
     val authToken = (parse(tokenResponse.body) \ "access_token").extract[String]
 
     val flightRequest = (Http(s"https://api.flysas.com/offers/flightproducts?outDate=$outDate&inDate=$inDate&adt=1&bookingFlow=REVENUE&lng=GB&pos=DK&from=$from&to=$to&channel=web")
       .headers("Authorization" -> authToken)
+      .timeout(connTimeoutMs = 5000, readTimeoutMs = 5000)
     )
 
     val flightResponse = flightRequest.asString
@@ -47,6 +47,7 @@ class RequestActor extends Actor {
     
     val outTime = new DateTime(((jsonResult \ "outboundFlights")(0) \ "startTimeInLocal").extract[String])
     val inTime = new DateTime(((jsonResult \ "inboundFlights")(0) \ "endTimeInLocal").extract[String])
+
 
     val outPrice = (outbound(0) \ "price" \ "totalPrice").extract[Float]
     val inPrice = (outbound(0) \ "price" \ "totalPrice").extract[Float]
