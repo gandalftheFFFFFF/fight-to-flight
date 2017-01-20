@@ -11,8 +11,12 @@ import dk.nscp.actors.ActorObjects._
 import dk.nscp.actors.{OutputActor, RequestActor, RequestRouterActor, TimeTableActor}
 import akka.actor.{Actor, Props, ActorSystem}
 import scala.concurrent.duration._
+import com.typesafe.scalalogging._
 
 object Runner extends App {
+
+  val logger = Logger("Runner")
+
   val system = ActorSystem("flightSystem")
 
   val outputter = system.actorOf(Props[OutputActor], name = "outputactor")
@@ -30,7 +34,7 @@ object Runner extends App {
         helper(nextDate, newDates, daysRemaining - 1)
       }
     }
-    helper(defaultDate, Seq(), numberOfDays)
+    helper(defaultDate, scala.collection.immutable.Seq[DateTime](), numberOfDays)
   }
 
   def initializeRequests(departureDates: Seq[DateTime], returnDates: Seq[DateTime], origin: String, destination: String): Unit = {

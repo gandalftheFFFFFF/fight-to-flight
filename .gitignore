@@ -9,3 +9,4 @@ project/boot/
 .cache
 output
 output.csv
+logs/

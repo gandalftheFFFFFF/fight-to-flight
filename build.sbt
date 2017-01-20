@@ -11,3 +11,7 @@ libraryDependencies += "com.typesafe.akka" % "akka-actor_2.11" % "2.4.16"
 libraryDependencies += "joda-time" % "joda-time" % "2.9.7"
 
 libraryDependencies += "org.joda" % "joda-convert" % "1.8"
+
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
+
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.7"

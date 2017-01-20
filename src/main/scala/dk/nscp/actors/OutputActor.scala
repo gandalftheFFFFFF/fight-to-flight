@@ -9,7 +9,7 @@ class OutputActor extends Actor {
   def receive = {
     case record: Record => 
       // print to output file
-      val fw = new FileWriter("output.csv", true)
+      val fw = new FileWriter("output/output.csv", true)
       fw.write(record.csvFormat + "\n")
       fw.close()
   }
