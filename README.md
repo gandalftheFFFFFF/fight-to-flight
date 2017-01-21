@@ -35,4 +35,4 @@ This actor serves as a request distribution hub. It will 'load balance' a given 
 These are responsible for making a request with the SAS REST API and retrieve a ticket price. They package the result in a `Record` and return it to the `timeSetActor` for it to process.
 
 ### outputActor
-TODO: implement
+Simply outputs the incoming ticket prices to `output/output.csv`
