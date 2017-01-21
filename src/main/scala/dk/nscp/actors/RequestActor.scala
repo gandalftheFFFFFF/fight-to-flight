@@ -8,6 +8,7 @@ import net.liftweb.json.DefaultFormats
 import java.text.SimpleDateFormat
 import org.joda.time.DateTime
 import com.typesafe.scalalogging._
+import dk.nscp.Helpers
 
 class RequestActor extends Actor {
 
@@ -36,7 +37,9 @@ class RequestActor extends Actor {
     
     val tokenRequest = (Http("https://www.sas.dk/bin/sas/d360/getOauthToken")
     ).postData("").timeout(connTimeoutMs = 5000, readTimeoutMs = 5000)
+    
     val tokenResponse = tokenRequest.asString
+    
     val authToken = (parse(tokenResponse.body) \ "access_token").extract[String]
   
     val flightRequest = (Http(s"https://api.flysas.com/offers/flightproducts?outDate=$outDate&inDate=$inDate&adt=1&bookingFlow=REVENUE&lng=GB&pos=DK&from=$from&to=$to&channel=web")
@@ -50,21 +53,39 @@ class RequestActor extends Actor {
 
       val jsonResult = parse(flightResponse.body)
 
-      // outbound is going
-      // inbound is returning
-      val outbound = jsonResult \ "outboundFlightProducts"
-      val inbound = jsonResult \ "inboundFlightProducts"
-      
-      val outTime = new DateTime(((jsonResult \ "outboundFlights")(0) \ "startTimeInLocal").extract[String])
-      val inTime = new DateTime(((jsonResult \ "inboundFlights")(0) \ "endTimeInLocal").extract[String])
+      logger.debug(pretty(render(jsonResult)))
 
+      // implicit class with a "has" method on JObject
+      import Helpers.RichJObject
+      if (jsonResult.has("errors")) {
+        None
+      } else {
 
-      val outPrice = (outbound(0) \ "price" \ "totalPrice").extract[Float]
-      val inPrice = (inbound(0) \ "price" \ "totalPrice").extract[Float]
+        // outbound is going
+        // inbound is returning
+        val outbound = jsonResult \ "outboundFlightProducts"
+        val inbound = jsonResult \ "inboundFlightProducts"
 
-      val totalPrice = outPrice + inPrice
+        val outboundFlights = (jsonResult \ "outboundFlights")(0)
 
-      Some(Record(searchTime, totalPrice, outPrice, inPrice, outTime, inTime))
+        val inboundFlights = (jsonResult \ "inboundFlights")(0)
+
+        val outTimeJson = outboundFlights \ "startTimeInLocal"
+        val inTimeJson = inboundFlights \ "endTimeInLocal"
+
+        val outTimeString = outTimeJson.extract[String]
+        val inTimeString = inTimeJson.extract[String]
+
+        val outTime = new DateTime(outTimeString)
+        val inTime = new DateTime(inTimeString)
+
+        val outPrice = (outbound(0) \ "price" \ "totalPrice").extract[Float]
+        val inPrice = (inbound(0) \ "price" \ "totalPrice").extract[Float]
+
+        val totalPrice = outPrice + inPrice
+
+        Some(Record(searchTime, totalPrice, outPrice, inPrice, outTime, inTime))
+      }
     } else {
       None
     }
