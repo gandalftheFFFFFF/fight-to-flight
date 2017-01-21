@@ -1,6 +1,9 @@
 # fight-to-flight
 This is a simple program that watches and logs the prices for flight tickets from a given origin and destination. It only checks SAS at the moment.
 
+## TODO
+- Move destination, origin, dates, plus-minus-dates, number of actors and check interval to a config file!
+
 ## Structure
 The program is created using actors. There is a main method that gets the wheels in motion.
 Flow of the program:
