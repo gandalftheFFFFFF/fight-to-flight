@@ -17,7 +17,7 @@ class RequestRouterActor extends Actor {
   }
 
   def receive = {
-    case check: CheckFlight =>
-      router.route(check, sender())
+    case request: Request =>
+      router.route(request, sender())
   }
 }

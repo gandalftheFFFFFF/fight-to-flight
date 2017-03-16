@@ -1,9 +1,14 @@
 package dk.nscp
 
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import akka.actor.ActorRef
 import dk.nscp.actors.ActorObjects._
+import dk.nscp.actors.SASRequest
 import net.liftweb.json._
+import scala.util.{Try, Success, Failure}
+import com.typesafe.config.ConfigFactory
+import scala.collection.JavaConversions._
 
 object Helpers {
 
@@ -42,10 +47,41 @@ object Helpers {
   def initializeRequests(departureDates: Seq[DateTime], returnDates: Seq[DateTime], origin: String, destination: String, timeSetActor: ActorRef): Unit = {
     for (departureDate <- departureDates) {
       for (returnDate <- returnDates) {
-        timeSetActor ! CheckFlight(departureDate, returnDate, origin, destination)
+        timeSetActor ! SASRequest("CPH", "TKY", departureDate, returnDate)
       }
     }
   }
+
+  def requestsFromConfig(configFile: String, configValue: String): Seq[Request] = {
+    val requestsConf = ConfigFactory.load(configFile)
+    val rawListOfEntries = requestsConf.getStringList(configValue).toList
+    rawListOfEntries.map(entry =>
+      RequestEntry.fromString(entry.toString)
+    ).filter(entry => 
+      entry.isSuccess
+    ).map(entry => 
+      entry.get
+    ).flatMap(entry =>
+      entry.generateRequests
+    )
+
+  }
+
+  implicit class SDateTime(dt: DateTime) {
+    def plusRange(days: Int): Seq[DateTime] = {
+      def loop(days: Int, result: Seq[DateTime]): Seq[DateTime] = {
+        if (days == 0) dt +: result
+        else loop(days - 1, dt.plusDays(days) +: result)
+      }
+      loop(days, Seq())
+    }
+  }
+    
+
+  
+      
+      
+
 
 
 

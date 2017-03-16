@@ -5,6 +5,8 @@ import org.joda.time.DateTime
 
 object ActorObjects {
 
+  case class Prepare(requests: Seq[Request])
+
   case object RefreshRecords
 
   // case class that describes a pair of tickets
@@ -28,4 +30,27 @@ object ActorObjects {
     to: String
   )
 
+  abstract trait Request {
+    val origin: String
+    val destination: String
+    val outTime: DateTime
+    val inTime: DateTime
+    def execute: Option[Record]
+    def airline: String
+    def airlineReadable: String
+  }
+  
+  case class NAXRequest(
+    origin: String,
+    destination: String,
+    inTime: DateTime,
+    outTime: DateTime
+  ) extends Request {
+    def execute: Option[Record] = {
+      None
+    }
+
+    def airline: String = "NAX"
+    def airlineReadable: String = "Norwegian Air Shuttle"
+  }
 }
