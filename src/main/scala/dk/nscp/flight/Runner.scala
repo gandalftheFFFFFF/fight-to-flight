@@ -1,14 +1,16 @@
-package dk.nscp
+package dk.nscp.flight
 
-import scalaj.http._
-import org.joda.time.DateTime
-import dk.nscp.actors.ActorObjects._
-import dk.nscp.actors.{OutputActor, RequestActor, RequestRouterActor, TimeTableActor, ControlActor}
-import akka.actor.{Actor, Props, ActorSystem}
 import scala.concurrent.duration._
+import scala.collection.JavaConversions._
+
+import akka.actor.{Actor, Props, ActorSystem}
 import com.typesafe.scalalogging._
 import com.typesafe.config.ConfigFactory
-import scala.collection.JavaConversions._
+import org.joda.time.DateTime
+import scalaj.http._
+
+import dk.nscp.flight.actors.ActorObjects._
+import dk.nscp.flight.actors.{OutputActor, RequestActor, RequestRouterActor, TimeTableActor, ControlActor}
 
 object Runner extends App {
 
@@ -28,7 +30,7 @@ object Runner extends App {
   import system.dispatcher
   
   // implicit class to convert java.time.Duration to scala.concurrent.duration.Duration minutes
-  import Helpers.SDuration 
+  import dk.nscp.flight.Implicits._
 
   val requests = Helpers.requestsFromConfig("requests.conf", "requests")
 

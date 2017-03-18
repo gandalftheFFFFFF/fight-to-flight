@@ -1,11 +1,14 @@
-package dk.nscp
+package dk.nscp.flight.request
+
+import scala.util.{Try, Success, Failure}
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import scala.util.{Try, Success, Failure}
-import dk.nscp.Helpers._
-import dk.nscp.actors.ActorObjects._
-import dk.nscp.actors.SASRequest
+
+import dk.nscp.flight.actors.ActorObjects._
+import dk.nscp.flight.request.RequestStructure._
+import dk.nscp.flight.Helpers._
+import dk.nscp.flight.Implicits._
 
 case class RequestEntry(
   airline: String,

@@ -1,11 +1,13 @@
-package dk.nscp.actors
+package dk.nscp.flight.actors
+
+import java.io.File
+import java.io.FileWriter
+import java.text.SimpleDateFormat
 
 import akka.actor.Actor
-import dk.nscp.actors.ActorObjects._
-import java.text.SimpleDateFormat
-import java.io.FileWriter
-import java.io.File
 import com.typesafe.config.ConfigFactory
+
+import dk.nscp.flight.actors.ActorObjects._
 
 class OutputActor extends Actor {
 

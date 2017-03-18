@@ -1,7 +1,10 @@
-package dk.nscp.actors
+package dk.nscp.flight.actors
 
 import java.util.Date
+
 import org.joda.time.DateTime
+
+import dk.nscp.flight.request.RequestStructure._
 
 object ActorObjects {
 
@@ -30,27 +33,4 @@ object ActorObjects {
     to: String
   )
 
-  abstract trait Request {
-    val origin: String
-    val destination: String
-    val outTime: DateTime
-    val inTime: DateTime
-    def execute: Option[Record]
-    def airline: String
-    def airlineReadable: String
-  }
-  
-  case class NAXRequest(
-    origin: String,
-    destination: String,
-    inTime: DateTime,
-    outTime: DateTime
-  ) extends Request {
-    def execute: Option[Record] = {
-      None
-    }
-
-    def airline: String = "NAX"
-    def airlineReadable: String = "Norwegian Air Shuttle"
-  }
 }

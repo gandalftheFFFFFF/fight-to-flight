@@ -1,9 +1,10 @@
-package dk.nscp.actors
+package dk.nscp.flight.actors
 
-import akka.actor.Actor
-import akka.actor.Props
+import akka.actor.{Actor, Props}
 import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
-import dk.nscp.actors.ActorObjects._
+
+import dk.nscp.flight.actors.ActorObjects._
+import dk.nscp.flight.request.RequestStructure._
 
 class RequestRouterActor extends Actor {
 

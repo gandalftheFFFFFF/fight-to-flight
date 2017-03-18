@@ -1,8 +1,10 @@
-package dk.nscp.actors
+package dk.nscp.flight.actors
 
 import akka.actor.Actor
-import dk.nscp.actors.ActorObjects._
 import com.typesafe.scalalogging._
+
+import dk.nscp.flight.actors.ActorObjects._
+import dk.nscp.flight.request.RequestStructure._
 
 class RequestActor extends Actor {
 

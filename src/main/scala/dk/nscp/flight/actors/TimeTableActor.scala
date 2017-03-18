@@ -1,10 +1,12 @@
-package dk.nscp.actors
+package dk.nscp.flight.actors
 
-import akka.actor.Actor
-import akka.actor.Props
-import org.joda.time.{DateTime, Duration}
 import scala.concurrent.duration._
-import dk.nscp.actors.ActorObjects._
+
+import akka.actor.{Actor, Props}
+import org.joda.time.{DateTime, Duration}
+
+import dk.nscp.flight.actors.ActorObjects._
+import dk.nscp.flight.request.RequestStructure._
 
 class TimeTableActor extends Actor {
 
@@ -20,3 +22,4 @@ class TimeTableActor extends Actor {
       requestRouterActor ! check
   }
 }
+

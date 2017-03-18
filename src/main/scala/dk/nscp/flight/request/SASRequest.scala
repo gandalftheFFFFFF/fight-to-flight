@@ -1,16 +1,17 @@
-package dk.nscp.actors
+package dk.nscp.flight.request
 
-import ActorObjects._
-import org.joda.time.DateTime
+import java.text.SimpleDateFormat
+
 import akka.actor.Actor
-import dk.nscp.actors.ActorObjects._
+import com.typesafe.scalalogging._
 import scalaj.http._
 import net.liftweb.json._
 import net.liftweb.json.DefaultFormats
-import java.text.SimpleDateFormat
 import org.joda.time.DateTime
-import com.typesafe.scalalogging._
-import dk.nscp.Helpers
+
+import dk.nscp.flight.actors.ActorObjects._
+import dk.nscp.flight.request.RequestStructure._
+import dk.nscp.flight.Helpers
 
 case class SASRequest(
   origin: String,
@@ -56,7 +57,7 @@ case class SASRequest(
       val jsonResult = parse(flightResponse.body)
 
       // implicit class with a "has" method on JObject
-      import Helpers.RichJObject
+      import dk.nscp.flight.Implicits._
       if (jsonResult.has("errors")) {
         println(jsonResult)
         None
